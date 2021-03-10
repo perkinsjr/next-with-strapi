@@ -5,9 +5,9 @@ import Images from "./images";
 const Card = ({ article }) => {
   return (
     <Link as={`/post/${article.slug}`} href="/post/[id]">
-      <a className="uk-link-reset">
-        <div className="uk-card uk-card-muted">
-          <div className="uk-card-media-top">
+      <a className="">
+        <div className="">
+          <div className="">
             <Images image={article.image} />
           </div>
           <div className="card__body">

@@ -12,8 +12,8 @@ const Category = ({ category, categories }) => {
   return (
     <Container categories={categories}>
       <Seo seo={seo} />
-      <div className="uk-section">
-        <div className="uk-container uk-container-large">
+      <div className="">
+        <div className="">
           <h1>{category.name}</h1>
           <Posts articles={category.articles} />
         </div>
