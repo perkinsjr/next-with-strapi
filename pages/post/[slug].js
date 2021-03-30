@@ -1,24 +1,13 @@
 import ReactMarkdown from "react-markdown";
 import Moment from "react-moment";
-import { fetchAPI } from "@/lib/strapi/api";
-import Container from "@/components/container";
 import Images from "@/components/images";
-import Seo from "@/components/seo";
 import { getStrapiMedia } from "@/lib/strapi/media";
 
-const Post = ({ article, categories }) => {
+const Post = ({ article }) => {
   const imageUrl = getStrapiMedia(article.image);
 
-  const seo = {
-    metaTitle: article.title,
-    metaDescription: article.description,
-    shareImage: article.image,
-    article: true,
-  };
-
   return (
-    <Container categories={categories}>
-      <Seo seo={seo} />
+    <>
       <div data-src={imageUrl} data-srcset={imageUrl} data-uk-img>
         <h1>{article.title}</h1>
       </div>
@@ -47,32 +36,70 @@ const Post = ({ article, categories }) => {
           </div>
         </div>
       </div>
-    </Container>
+    </>
   );
 };
 
-export async function getStaticPaths() {
-  const articles = await fetchAPI("/articles");
+import { fetchGraphql } from "react-tinacms-strapi";
+// ...
+export async function getStaticProps({ params }) {
+  const postResults = await fetchGraphql(
+    process.env.NEXT_PUBLIC_STRAPI_API_URL,
+    `query{
+      articles(where: {slug: "${params.slug}"}){
+        id
+        title
+        publishedAt
+        slug
+        content
+        author {
+          name
+          picture { 
+            url
+          }
+        }
+        image {
+          url
+        }
+      }
+    }
+  `
+  );
+  console.log(postResults);
+  const post = await postResults.data.articles[0];
+  const content = await markdownToHtml(post.content || "");
 
   return {
-    paths: articles.map((article) => ({
-      params: {
-        slug: article.slug,
+    props: {
+      article: {
+        ...post,
+        content,
       },
-    })),
-    fallback: false,
+    },
   };
 }
 
-export async function getStaticProps({ params }) {
-  const articles = await fetchAPI(
-    `/articles?slug=${params.slug}&status=published`
+export async function getStaticPaths() {
+  const postResults = await fetchGraphql(
+    process.env.NEXT_PUBLIC_STRAPI_API_URL,
+    `
+    query{
+      articles{
+        slug
+      }
+    }
+  `
   );
-  const categories = await fetchAPI("/categories");
 
   return {
-    props: { article: articles[0], categories },
-    revalidate: 1,
+    paths: postResults.data.articles.map((post) => {
+      return {
+        params: {
+          slug: post.slug,
+        },
+      };
+    }),
+    fallback: false,
   };
 }
 

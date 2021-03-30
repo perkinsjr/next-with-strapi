@@ -1,33 +1,47 @@
 import React from "react";
 import Posts from "@/components/posts";
 import Container from "@/components/container";
-import Seo from "@/components/seo";
-import { fetchAPI } from "@/lib/strapi/api";
+import { fetchGraphql } from "react-tinacms-strapi";
 
-const Home = ({ articles, categories, homepage }) => {
+const Home = ({ articles }) => {
+  console.log(JSON.stringify(articles));
   return (
-    <Container categories={categories}>
-      <Seo seo={homepage.seo} />
-      <div>
-        <div className="homepage__container">
-          <h1 className="homepage__title">{homepage.hero.title}</h1>
-          <Posts articles={articles} />
-        </div>
+    <div>
+      <div className="homepage__container">
+        <h1 className="homepage__title">Blog page</h1>
+        <Posts articles={articles} />
       </div>
-    </Container>
+    </div>
   );
 };
 
 export async function getStaticProps() {
-  // Run API calls in parallel
-  const [articles, categories, homepage] = await Promise.all([
-    fetchAPI("/articles?status=published"),
-    fetchAPI("/categories"),
-    fetchAPI("/homepage"),
-  ]);
-
+  const postResults = await fetchGraphql(
+    process.env.NEXT_PUBLIC_STRAPI_API_URL,
+    `
+    query{
+         articles {
+           title
+           publishedAt
+           slug
+           category{
+             name
+           }
+           author {
+             name
+             picture {
+               url
+             }
+           }
+           image {
+             url
+           }
+         }
+       }
+  `
+  );
   return {
-    props: { articles, categories, homepage },
+    props: { articles: postResults.data.articles },
     revalidate: 1,
   };
 }

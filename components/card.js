@@ -3,6 +3,7 @@ import Link from "next/link";
 import Images from "./images";
 
 const Card = ({ article }) => {
+  console.log(article);
   return (
     <Link as={`/post/${article.slug}`} href="/post/[id]">
       <a className="">
@@ -15,7 +16,7 @@ const Card = ({ article }) => {
               {article.title}
             </p>
             <p id="category" className="card__article__category">
-              {article.category.name}
+              {article.catergory && article.category.name}
             </p>
           </div>
         </div>
