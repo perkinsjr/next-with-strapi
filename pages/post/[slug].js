@@ -14,7 +14,7 @@ const Post = ({ article }) => {
           <ReactMarkdown source={article.content} escapeHtml={false} />
           <div>
             <div>
-              {article.author.picture != null && (
+              {article.author.picture && (
                 <Images
                   image={article.author.picture}
                   style={{
