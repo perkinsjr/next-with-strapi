@@ -1,14 +1,12 @@
 import ReactMarkdown from "react-markdown";
 import Moment from "react-moment";
 import Images from "@/components/images";
-import { getStrapiMedia } from "@/lib/strapi/media";
-
+import markdownToHtml from "@/lib/markdownToHtml";
 const Post = ({ article }) => {
-  const imageUrl = getStrapiMedia(article.image);
-
+  console.log(article);
   return (
     <>
-      <div data-src={imageUrl} data-srcset={imageUrl} data-uk-img>
+      <div>
         <h1>{article.title}</h1>
       </div>
       <div>
@@ -16,7 +14,7 @@ const Post = ({ article }) => {
           <ReactMarkdown source={article.content} escapeHtml={false} />
           <div>
             <div>
-              {article.author.picture && (
+              {article.author.picture != null && (
                 <Images
                   image={article.author.picture}
                   style={{
