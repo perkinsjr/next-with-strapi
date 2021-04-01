@@ -15,7 +15,7 @@ const Home = ({ articles }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getStaticProps({ params, preview, previewData }) {
   const postResults = await fetchGraphql(
     process.env.NEXT_PUBLIC_STRAPI_API_URL,
     `
@@ -40,8 +40,13 @@ export async function getStaticProps() {
        }
   `
   );
+  if (preview) {
+    return {
+      props: { articles: postResults.data.articles, preview, ...previewData },
+    };
+  }
   return {
-    props: { articles: postResults.data.articles },
+    props: { articles: postResults.data.articles, preview: false },
     revalidate: 1,
   };
 }

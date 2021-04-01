@@ -7,6 +7,7 @@ const Post = ({ article }) => {
   return (
     <>
       <div>
+        <img src={article.image.url} />
         <h1>{article.title}</h1>
       </div>
       <div>
