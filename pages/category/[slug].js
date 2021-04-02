@@ -23,8 +23,16 @@ const Category = ({ category, categories }) => {
 };
 
 export async function getStaticPaths() {
-  const categories = await fetchAPI("/categories");
-
+  const postResults = await fetchGraphql(
+    process.env.NEXT_PUBLIC_STRAPI_API_URL,
+    `query{
+      categories{
+        id
+      }
+    }
+  `
+  );
+  const categories = await postResults.data.categories;
   return {
     paths: categories.map((category) => ({
       params: {

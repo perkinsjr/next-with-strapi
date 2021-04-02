@@ -7,7 +7,7 @@ import {
 import { TinaCMS, TinaProvider } from "tinacms";
 import { useCMS } from "@tinacms/react-core";
 import { useMemo } from "react";
-
+import "../styles/globals.css";
 export default function MyApp({ Component, pageProps }) {
   const cms = useMemo(
     () =>

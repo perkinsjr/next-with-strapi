@@ -3,50 +3,65 @@ import Posts from "@/components/posts";
 import Container from "@/components/container";
 import { fetchGraphql } from "react-tinacms-strapi";
 
-const Home = ({ articles }) => {
-  console.log(JSON.stringify(articles));
+const Home = ({ articles, categories }) => {
   return (
-    <div>
-      <div className="homepage__container">
-        <h1 className="homepage__title">Blog page</h1>
-        <Posts articles={articles} />
+    <Container categories={categories}>
+      <div>
+        <div className="homepage__container">
+          <h1 className="homepage__title">Blog page</h1>
+          <Posts articles={articles} />
+        </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
-export async function getStaticProps({ params, preview, previewData }) {
+export async function getStaticProps({ preview, previewData }) {
   const postResults = await fetchGraphql(
     process.env.NEXT_PUBLIC_STRAPI_API_URL,
     `
     query{
-         articles {
-           title
-           publishedAt
-           slug
-           category{
-             name
-           }
-           author {
-             name
-             picture {
-               url
-             }
-           }
-           image {
-             url
-           }
-         }
-       }
+      articles {
+        title
+        publishedAt
+        slug
+        category{
+          name
+        }
+        author {
+          name
+          picture {
+            url
+          }
+        }
+        image {
+          url
+        }
+      }
+     categories{
+       name
+       slug
+       id
+     }
+    }
   `
   );
   if (preview) {
     return {
-      props: { articles: postResults.data.articles, preview, ...previewData },
+      props: {
+        articles: postResults.data.articles,
+        categories: postResults.data.categories,
+        preview,
+        ...previewData,
+      },
     };
   }
   return {
-    props: { articles: postResults.data.articles, preview: false },
+    props: {
+      articles: postResults.data.articles,
+      categories: postResults.data.categories,
+      preview: false,
+    },
     revalidate: 1,
   };
 }
