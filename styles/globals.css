@@ -83,3 +83,9 @@ nav ul li:hover {
   margin: 4px 2px;
   border-radius: 16px;
 }
+
+.author-picture {
+  position: "static";
+  border-radius: "50%";
+  height: 30;
+}

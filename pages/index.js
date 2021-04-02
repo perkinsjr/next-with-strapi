@@ -1,18 +1,17 @@
 import React from "react";
 import Posts from "@/components/posts";
-import Container from "@/components/container";
 import { fetchGraphql } from "react-tinacms-strapi";
 
 const Home = ({ articles, categories }) => {
   return (
-    <Container categories={categories}>
+    <main>
       <div>
         <div className="homepage__container">
           <h1 className="homepage__title">Blog page</h1>
           <Posts articles={articles} />
         </div>
       </div>
-    </Container>
+    </main>
   );
 };
 
@@ -38,11 +37,7 @@ export async function getStaticProps({ preview, previewData }) {
           url
         }
       }
-     categories{
-       name
-       slug
-       id
-     }
+
     }
   `
   );
@@ -50,7 +45,6 @@ export async function getStaticProps({ preview, previewData }) {
     return {
       props: {
         articles: postResults.data.articles,
-        categories: postResults.data.categories,
         preview,
         ...previewData,
       },
@@ -59,7 +53,6 @@ export async function getStaticProps({ preview, previewData }) {
   return {
     props: {
       articles: postResults.data.articles,
-      categories: postResults.data.categories,
       preview: false,
     },
     revalidate: 1,

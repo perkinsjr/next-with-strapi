@@ -1,13 +1,12 @@
 import ReactMarkdown from "react-markdown";
 import Moment from "react-moment";
 import Images from "@/components/images";
-import Container from "@/components/container";
 import { InlineWysiwyg } from "react-tinacms-editor";
 import { fetchGraphql } from "react-tinacms-strapi";
 import { useForm, usePlugin, useCMS } from "tinacms";
 import { InlineForm, InlineText, InlineImage } from "react-tinacms-inline";
 
-const Post = ({ post: initialPost, preview, categories }) => {
+const Post = ({ post: initialPost, preview }) => {
   const cms = useCMS();
   const formConfig = {
     id: initialPost.id,
@@ -52,7 +51,7 @@ const Post = ({ post: initialPost, preview, categories }) => {
   return (
     <div preview={{ preview }}>
       <InlineForm form={form} initialStatus={"active"}>
-        <Container categories={categories}>
+        <main>
           <div>
             <InlineImage
               name="image.id"
@@ -81,11 +80,7 @@ const Post = ({ post: initialPost, preview, categories }) => {
                   {post.author.picture && (
                     <Images
                       image={post.author.picture}
-                      style={{
-                        position: "static",
-                        borderRadius: "50%",
-                        height: 30,
-                      }}
+                      style={"author-picture"}
                     />
                   )}
                 </div>
@@ -98,7 +93,7 @@ const Post = ({ post: initialPost, preview, categories }) => {
               </div>
             </div>
           </div>
-        </Container>
+        </main>
       </InlineForm>
     </div>
   );
@@ -125,11 +120,6 @@ export async function getStaticProps({ params, preview, previewData }) {
           url
         }
       }
-      categories{
-        name
-        slug
-        id
-      }
     }
   `
   );
@@ -153,7 +143,6 @@ export async function getStaticProps({ params, preview, previewData }) {
       post: {
         ...post,
       },
-      categories: categories,
       preview: false,
     },
   };
