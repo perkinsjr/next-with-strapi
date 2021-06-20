@@ -5,6 +5,9 @@ import Seo from "@/components/seo";
 import { fetchAPI } from "@/lib/strapi/api";
 
 const Home = ({ articles, categories, homepage }) => {
+  console.log(articles);
+  console.log(categories);
+  console.log(homepage);
   return (
     <Container categories={categories}>
       <Seo seo={homepage.seo} />
